@@ -1,8 +1,10 @@
-import express from "express";
-import cors from "cors"
+const db = require("./models");
+const express = require("express");
+const cors = require("cors");
 
+const { middleware } = require("./middleware/middleware");
+const { routes } = require("./routes");
 const app = express();
-
 var corsOption = {
   origin: "http://localhost:8000",
 };
@@ -19,10 +21,12 @@ app.get("/", (req, res) => {
 
 app.get("/post", (req, res) => {
   res.send({ message: "Post" });
-
 });
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+app.use("/api", routes);
+db.sequelize.sync().then((require) => {
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}.`);
+  });
 });
