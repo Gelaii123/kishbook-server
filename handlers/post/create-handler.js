@@ -1,10 +1,16 @@
 const { Post } = require("../../models");
-module.exports = CreateBlog = (req, res) => {
+const verifyToken = require("../../utils/verifyToken");
+module.exports = CreateBlog = async (req, res) => {
   const blog = req.body;
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  const decode = await verifyToken(token);
+  const userid = decode.data.userid;
 
   Post.create({
     post: blog.post,
-    userid: blog.userid,
+    userid: userid,
   })
     .then((result) => {
       return res.status(200).send({ result });

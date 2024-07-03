@@ -6,8 +6,12 @@ module.exports = Signin = (req, res) => {
   User.findOne({ where: { email: user.email } })
     .then((result) => {
       const token = jwt.sign(
-        { email: result.email, password: result.password },
-        "helloworld"
+        {
+          email: result.email,
+          password: result.password,
+          userid: result.id,
+        },
+        process.env.JWT_SECRET_KEY
       );
       return res
         .status(200)
